@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.foodezy.activities.CategoryMealsActivity
 import com.example.foodezy.activities.MealActivity
 import com.example.foodezy.adapters.CategoriesAdapter
 import com.example.foodezy.adapters.MostPopularAdapter
@@ -68,6 +69,15 @@ class HomeFragment : Fragment() {
 
         homeMvvm.getCategories()
         observeCategoriesLiveData()
+        onCategoryClick()
+    }
+
+    private fun onCategoryClick() {
+        categoriesAdapter.onItemClick = { category ->
+            val intent = Intent(activity,CategoryMealsActivity::class.java)
+            intent.putExtra(CATEGORY_NAME,category.strCategory)
+            startActivity(intent)
+        }
     }
 
     private fun prepareCategoriesRecyclerView() {
