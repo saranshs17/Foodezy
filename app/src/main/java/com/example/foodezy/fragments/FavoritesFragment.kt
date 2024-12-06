@@ -8,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransitionImpl
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.foodezy.R
 import com.example.foodezy.activities.MainActivity
 import com.example.foodezy.adapters.FavoritesMealsAdapter
 import com.example.foodezy.databinding.FragmentFavoritesBinding
 import com.example.foodezy.viewmodels.HomeViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding:FragmentFavoritesBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var favoritesMealsAdapter: FavoritesMealsAdapter
+    private lateinit var favoritesAdapter: FavoritesMealsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,20 +41,47 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prepareRecyclerView()
         observeFavorites()
+
+        val itemTouchHelper = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+               return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val deletedMeal = favoritesAdapter.differ.currentList[position]
+                viewModel.deleteMeal(deletedMeal)
+
+                Snackbar.make(requireView(),"Meal Deleted",Snackbar.LENGTH_LONG).setAction(
+                    "Undo",
+                    View.OnClickListener {
+                        viewModel.insertMeal(deletedMeal)
+                    }
+                ).show()
+            }
+        }
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.rvFavorites)
     }
 
     private fun prepareRecyclerView() {
-        favoritesMealsAdapter= FavoritesMealsAdapter()
+        favoritesAdapter= FavoritesMealsAdapter()
         binding.rvFavorites.apply {
             layoutManager = GridLayoutManager(context,2,GridLayoutManager.VERTICAL,false)
-            adapter=favoritesMealsAdapter
+            adapter=favoritesAdapter
         }
     }
 
     private fun observeFavorites() {
         viewModel.observeFavoritesMealsLiveData().observe(requireActivity()) { meals ->
             meals.forEach {
-                favoritesMealsAdapter.differ.submitList(meals)
+                favoritesAdapter.differ.submitList(meals)
             }
         }
     }
