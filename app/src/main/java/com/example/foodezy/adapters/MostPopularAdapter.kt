@@ -11,6 +11,8 @@ import com.example.foodezy.models.MealsByCategory
 class MostPopularAdapter(): RecyclerView.Adapter<MostPopularAdapter.PopularMealViewHolder>() {
     private var mealList = ArrayList<MealsByCategory>()
     lateinit var onItemClick:((MealsByCategory)->Unit)
+    var onLongItemClick:((MealsByCategory)->Unit)?=null
+
     @SuppressLint("NotifyDataSetChanged")
     fun setMeals(mealsList:ArrayList<MealsByCategory>){
         this.mealList = mealsList
@@ -33,6 +35,10 @@ class MostPopularAdapter(): RecyclerView.Adapter<MostPopularAdapter.PopularMealV
             .into(holder.binding.imgPopularMeal)
         holder.itemView.setOnClickListener {
             onItemClick.invoke(mealList[position])
+        }
+        holder.itemView.setOnLongClickListener{
+            onLongItemClick?.invoke(mealList[position])
+            true
         }
     }
 }

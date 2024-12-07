@@ -17,6 +17,7 @@ import com.example.foodezy.activities.MealActivity
 import com.example.foodezy.adapters.CategoriesAdapter
 import com.example.foodezy.adapters.MostPopularAdapter
 import com.example.foodezy.databinding.FragmentHomeBinding
+import com.example.foodezy.fragments.bottomsheet.MealBottomSheetFragment
 import com.example.foodezy.models.MealsByCategory
 import com.example.foodezy.models.Meal
 import com.example.foodezy.viewmodels.HomeViewModel
@@ -71,6 +72,15 @@ class HomeFragment : Fragment() {
         viewModel.getCategories()
         observeCategoriesLiveData()
         onCategoryClick()
+
+        onPopularItemLongClick()
+    }
+
+    private fun onPopularItemLongClick() {
+        popularItemsAdapter.onLongItemClick={meal->
+            var mealBottomSheetFragment = MealBottomSheetFragment.newInstance(meal.idMeal)
+            mealBottomSheetFragment.show(childFragmentManager,"Meal Info")
+        }
     }
 
     private fun onCategoryClick() {
