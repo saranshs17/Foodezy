@@ -1,18 +1,15 @@
 package com.example.foodezy.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentTransitionImpl
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodezy.R
 import com.example.foodezy.activities.MainActivity
-import com.example.foodezy.adapters.FavoritesMealsAdapter
+import com.example.foodezy.adapters.MealsAdapter
 import com.example.foodezy.databinding.FragmentFavoritesBinding
 import com.example.foodezy.viewmodels.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 class FavoritesFragment : Fragment() {
     private lateinit var binding:FragmentFavoritesBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var favoritesAdapter: FavoritesMealsAdapter
+    private lateinit var favoritesAdapter: MealsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +68,7 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun prepareRecyclerView() {
-        favoritesAdapter= FavoritesMealsAdapter()
+        favoritesAdapter= MealsAdapter()
         binding.rvFavorites.apply {
             layoutManager = GridLayoutManager(context,2,GridLayoutManager.VERTICAL,false)
             adapter=favoritesAdapter
